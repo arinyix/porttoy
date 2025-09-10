@@ -42,8 +42,8 @@ SELECT id, 'public/img/placeholder.png', title, NOW() FROM products;
 
 -- Equipe
 INSERT INTO team (name, role, photo_path, lattes_url, created_at) VALUES
-('Prof. Celson Lima', 'Coordenador', 'public/img/placeholder.png', NULL, NOW()),
-('Maria Mota', 'Bolsista', 'public/img/placeholder.png', NULL, NOW()),
+('Professor', 'Coordenador', 'public/img/placeholder.png', NULL, NOW()),
+('Maria', 'Bolsista', 'public/img/placeholder.png', NULL, NOW()),
 ('Danilo', 'Bolsista', 'public/img/placeholder.png', NULL, NOW()),
 ('Joanna', 'Colaboradora', 'public/img/placeholder.png', NULL, NOW());
 

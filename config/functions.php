@@ -212,3 +212,4 @@ function get_product_images(int $productId): array {
 function count_table(string $table): int {
     return (int) fetch_value("SELECT COUNT(*) FROM {$table}");
 }
+

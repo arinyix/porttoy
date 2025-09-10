@@ -32,7 +32,6 @@ $products = get_products($perPage, 0, $category, $subcategory, $q, 'disponivel')
       <a class="btn" href="<?= e(base_url('contato.php')) ?>">Fale Conosco</a>
     </div>
   </div>
-  <img src="<?= e(asset('img/placeholder.png')) ?>" alt="Logo/Arte ToyLab" style="width:100%; border-radius: 16px;">
 </section>
 
 <?php include __DIR__ . '/templates/components/filter-bar.php'; ?>

@@ -132,3 +132,5 @@ label{ display:block; font-weight:600; margin:8px 0 6px; }
 @keyframes fadin{ from{opacity:0; transform: translateY(4px);} to{opacity:1; transform: none;} }
 
 .status-dev{ color: #ffb703; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+
+

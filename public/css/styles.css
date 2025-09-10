@@ -134,3 +134,46 @@ label{ display:block; font-weight:600; margin:8px 0 6px; }
 .status-dev{ color: #ffb703; font-size: 12px; font-weight: 700; text-transform: uppercase; }
 
 
+/* ===== Detalhe do Produto ===== */
+.detail {
+  max-width: 1100px;
+  margin: 24px auto;
+  padding: 0 16px;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1.2fr .8fr; /* imagem maior + info */
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .detail { grid-template-columns: 1fr; }
+}
+
+/* Galeria: capa grande + miniaturas */
+.detail .gallery { display: grid; gap: 12px; }
+.detail .cover {
+  width: 100%;
+  max-height: 65vh;          /* <- limita a altura na viewport */
+  aspect-ratio: 16 / 9;      /* mantém proporção moderna */
+  object-fit: cover;         /* corta com elegância */
+  border-radius: 16px;
+  display: block;
+  box-shadow: var(--shadow);
+}
+.detail .thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+.detail .thumbs img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+  cursor: zoom-in;
+  box-shadow: var(--shadow);
+}
+
+/* Coluna de informações */
+.detail .info h1 { margin-top: 0; }
+.detail .info p { margin: 8px 0; }

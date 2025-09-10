@@ -1,0 +1,8 @@
+# public/uploads/.htaccess
+# Bloqueia execução de scripts nesta pasta
+RemoveHandler .php .phtml .php3 .php4 .php5 .phps
+php_flag engine off
+Options -ExecCGI
+<FilesMatch "\.(php|phar|phtml|cgi|pl|py|sh)$">
+  Deny from all
+</FilesMatch>

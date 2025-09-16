@@ -94,8 +94,8 @@ htdocs/
   $dbPass = ''; // senha vazia por padrão no Windows
   ```
 5. **Acessos**:
-- **Site público**: `http://localhost/toylab/`
-- **Admin**: `http://localhost/toylab/admin/`
+- **Site público**: `http://localhost/porttoy/`
+- **Admin**: `http://localhost/porttoy/admin/`
 
 > Observação: as funções `base_url()`/`asset()`/`media_url()` calculam o caminho automaticamente — não é preciso fixar `/toylab` no código.
 
@@ -103,13 +103,13 @@ htdocs/
 
 ## 🔐 Login da área administrativa
 
-- **URL do admin:** `http://localhost/toylab/admin/`
+- **URL do admin:** `http://localhost/porttoy/admin/`
 - **Credenciais (demo):**
 - E-mail: `admin@toylab.ufopa.br`
 - Senha:  `12345678`
 
 > Se quiser **recriar/alterar** o usuário admin, acesse:  
-> `http://localhost/toylab/tools/set_admin.php`  
+> `http://localhost/porttoy/tools/set_admin.php`  
 > Preencha e salve — o sistema grava o **hash** da senha no banco com `password_hash(...)`.
 
 ---
@@ -179,8 +179,8 @@ Verifique se o `<form>` tem `<?= csrf_field(); ?>` e se o `POST` chama `csrf_val
 
 ### Contatos (demo) / Admin
 - **Admin:** `admin@toylab.ufopa.br` / `12345678`
-- **Público:** `http://localhost/toylab/`
-- **Admin:** `http://localhost/toylab/admin/`
+- **Público:** `http://localhost/porttoy/`
+- **Admin:** `http://localhost/porttoy/admin/`
 
 Recomenda-se trocar após o primeiro login.
 Ou use tools/set_admin.php para definir um novo hash.

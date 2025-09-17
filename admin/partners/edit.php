@@ -25,15 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $logo_path = $partner['logo_path'];
 
-  // Remover logo atual
   if (isset($_POST['remove_logo']) && $_POST['remove_logo'] === '1') {
     if ($logo_path && str_starts_with($logo_path, 'public/uploads/')) {
-      @unlink(BASE_PATH . '/' . $logo_path); // ignora falhas silenciosamente
+      @unlink(BASE_PATH . '/' . $logo_path);
     }
     $logo_path = null;
   }
 
-  // Substituir por logo nova (se enviada)
   if (!$err && !empty($_FILES['logo']) && ($_FILES['logo']['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
     $paths = handle_images_upload('logo');
     if ($paths) {
@@ -54,13 +52,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 ?>
+<style>
+.admin-form .preview{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.admin-form .form-actions{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:820px){
+  .admin-form .form-actions{flex-direction:column}
+  .admin-form .form-actions .btn{width:100%;justify-content:center}
+}
+</style>
+
 <h1 class="fade-in">Editar parceria #<?= (int)$id ?></h1>
 
 <?php if ($err): ?>
   <div class="card"><div class="pad"><ul><?php foreach ($err as $e) echo '<li>'.e($e).'</li>'; ?></ul></div></div><br>
 <?php endif; ?>
 
-<form method="post" class="fade-in" enctype="multipart/form-data">
+<form method="post" class="admin-form fade-in" enctype="multipart/form-data">
   <?= csrf_field(); ?>
 
   <label for="name">Nome</label>
@@ -71,18 +78,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <label>Logo atual</label>
   <div class="card"><div class="pad">
-    <?php if (!empty($partner['logo_path'])): ?>
-      <img src="<?= e(base_url($partner['logo_path'])) ?>" alt="Logo atual" style="width:120px;height:60px;object-fit:contain;background:#fff;border:1px solid #e7e7e7;border-radius:8px;padding:6px">
-      <div><label><input type="checkbox" name="remove_logo" value="1"> Remover logo</label></div>
-    <?php else: ?>
-      <em>Sem logo</em>
-    <?php endif; ?>
+    <div class="preview">
+      <?php if (!empty($partner['logo_path'])): ?>
+        <img src="<?= e(base_url($partner['logo_path'])) ?>" alt="Logo atual" style="width:120px;height:60px;object-fit:contain;background:#fff;border:1px solid #e7e7e7;border-radius:8px;padding:6px">
+        <label><input type="checkbox" name="remove_logo" value="1"> Remover logo</label>
+      <?php else: ?>
+        <em>Sem logo</em>
+      <?php endif; ?>
+    </div>
   </div></div>
 
   <label for="logo">Enviar nova logo (opcional)</label>
   <input id="logo" name="logo" class="input" type="file" accept=".jpg,.jpeg,.png,.webp">
 
-  <p>
+  <p class="form-actions">
     <button class="btn" type="submit">Salvar</button>
     <a class="btn secondary" href="<?= e(base_url('admin/partners/list.php')) ?>">Voltar</a>
   </p>

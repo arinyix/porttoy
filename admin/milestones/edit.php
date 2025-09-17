@@ -30,13 +30,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 ?>
+<style>
+.admin-form .form-actions{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:820px){
+  .admin-form .form-actions{flex-direction:column}
+  .admin-form .form-actions .btn{width:100%;justify-content:center}
+}
+</style>
+
 <h1 class="fade-in">Editar marco #<?= (int)$id ?></h1>
 
 <?php if ($err): ?>
   <div class="card"><div class="pad"><ul><?php foreach ($err as $e) echo '<li>'.e($e).'</li>'; ?></ul></div></div><br>
 <?php endif; ?>
 
-<form method="post" class="fade-in">
+<form method="post" class="admin-form fade-in">
   <?= csrf_field(); ?>
 
   <label for="title">Título</label>
@@ -48,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <label for="description">Descrição</label>
   <textarea id="description" name="description" class="input" rows="6"><?= e($description) ?></textarea>
 
-  <p>
+  <p class="form-actions">
     <button class="btn" type="submit">Salvar</button>
     <a class="btn secondary" href="<?= e(base_url('admin/milestones/list.php')) ?>">Voltar</a>
   </p>

@@ -28,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     else $pubAt = $dt->format('Y-m-d H:i:s');
   }
 
-  // Se excerpt vazio, re-gera do conteúdo
   if ($excerpt === '' && $content !== '') {
     $tmp = trim(preg_replace('/\s+/', ' ', strip_tags($content)));
     $excerpt = mb_substr($tmp, 0, 160) . (mb_strlen($tmp) > 160 ? '…' : '');
@@ -36,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $cover_path = $post['cover_path'];
 
-  // Remover capa atual?
   if (isset($_POST['remove_cover']) && $_POST['remove_cover'] === '1') {
     if ($cover_path && str_starts_with($cover_path, 'public/uploads/')) {
       @unlink(BASE_PATH . '/' . $cover_path);
@@ -44,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cover_path = null;
   }
 
-  // Substituir capa?
   if (!$err && !empty($_FILES['cover']) && ($_FILES['cover']['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
     $paths = handle_images_upload('cover');
     if ($paths) {
@@ -56,9 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   if (!$err) {
-    // Mantém slug atual (único); se estiver vazio, cria um
     $slug = $post['slug'] ?: (slugify($title) . '-' . substr(bin2hex(random_bytes(2)), 0, 4));
-
     save_row('posts', [
       'title'       => $title,
       'slug'        => $slug,
@@ -73,13 +68,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 ?>
+<style>
+.admin-form .preview{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.admin-form .form-actions{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:820px){
+  .admin-form .form-row{grid-template-columns:1fr!important}
+  .admin-form .form-actions{flex-direction:column}
+  .admin-form .form-actions .btn{width:100%;justify-content:center}
+}
+</style>
+
 <h1 class="fade-in">Editar post #<?= (int)$id ?></h1>
 
 <?php if ($err): ?>
   <div class="card"><div class="pad"><ul><?php foreach ($err as $e) echo '<li>'.e($e).'</li>'; ?></ul></div></div><br>
 <?php endif; ?>
 
-<form method="post" enctype="multipart/form-data" class="fade-in">
+<form method="post" enctype="multipart/form-data" class="admin-form fade-in">
   <?= csrf_field(); ?>
 
   <label for="title">Título</label>
@@ -104,15 +109,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <label>Capa atual</label>
   <div class="card"><div class="pad">
-    <?php if (!empty($post['cover_path'])): ?>
-      <img src="<?= e(base_url($post['cover_path'])) ?>" alt="Capa atual" style="width:160px;height:90px;object-fit:cover;border-radius:8px;border:1px solid #e7e7e7;background:#fff">
-      <div><label><input type="checkbox" name="remove_cover" value="1"> Remover capa</label></div>
-    <?php else: ?>
-      <em>Sem capa</em>
-    <?php endif; ?>
+    <div class="preview">
+      <?php if (!empty($post['cover_path'])): ?>
+        <img src="<?= e(base_url($post['cover_path'])) ?>" alt="Capa atual" style="width:160px;height:90px;object-fit:cover;border-radius:8px;border:1px solid #e7e7e7;background:#fff">
+        <label><input type="checkbox" name="remove_cover" value="1"> Remover capa</label>
+      <?php else: ?>
+        <em>Sem capa</em>
+      <?php endif; ?>
+    </div>
   </div></div>
 
-  <p>
+  <p class="form-actions">
     <button class="btn" type="submit">Salvar</button>
     <a class="btn secondary" href="<?= e(base_url('admin/posts/list.php')) ?>">Voltar</a>
   </p>

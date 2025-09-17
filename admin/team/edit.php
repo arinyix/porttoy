@@ -57,13 +57,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 ?>
+<style>
+/* responsividade local do form (não afeta outras telas) */
+.admin-form .preview{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.admin-form .form-actions{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:820px){
+  .admin-form .form-actions{flex-direction:column}
+  .admin-form .form-actions .btn{width:100%;justify-content:center}
+}
+</style>
+
 <h1 class="fade-in">Editar membro #<?= (int)$id ?></h1>
 
 <?php if ($err): ?>
   <div class="card"><div class="pad"><ul><?php foreach ($err as $e) echo '<li>'.e($e).'</li>'; ?></ul></div></div><br>
 <?php endif; ?>
 
-<form method="post" enctype="multipart/form-data" class="fade-in">
+<form method="post" enctype="multipart/form-data" class="admin-form fade-in">
   <?= csrf_field(); ?>
 
   <label for="name">Nome</label>
@@ -77,18 +87,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <label>Foto atual</label>
   <div class="card"><div class="pad">
-    <?php if (!empty($member['photo_path'])): ?>
-      <img src="<?= e(base_url($member['photo_path'])) ?>" alt="Foto atual" style="width:96px;height:96px;object-fit:cover;border-radius:12px;border:1px solid #e7e7e7;background:#fff">
-      <div><label><input type="checkbox" name="remove_photo" value="1"> Remover foto</label></div>
-    <?php else: ?>
-      <em>Sem foto</em>
-    <?php endif; ?>
+    <div class="preview">
+      <?php if (!empty($member['photo_path'])): ?>
+        <img src="<?= e(base_url($member['photo_path'])) ?>" alt="Foto atual"
+             style="width:96px;height:96px;object-fit:cover;border-radius:12px;border:1px solid #e7e7e7;background:#fff">
+        <label><input type="checkbox" name="remove_photo" value="1"> Remover foto</label>
+      <?php else: ?>
+        <em>Sem foto</em>
+      <?php endif; ?>
+    </div>
   </div></div>
 
   <label for="photo">Enviar nova foto (opcional)</label>
   <input id="photo" name="photo" type="file" class="input" accept=".jpg,.jpeg,.png,.webp">
 
-  <p>
+  <p class="form-actions">
     <button class="btn" type="submit">Salvar</button>
     <a class="btn secondary" href="<?= e(base_url('admin/team/list.php')) ?>">Voltar</a>
   </p>

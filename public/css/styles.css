@@ -575,3 +575,29 @@ label{ display:block; font-weight:600; margin:8px 0 6px; }
 .stat-card{ border:1px solid #e7e7e7; border-radius:16px; padding:14px; background:#fff; }
 .dark .stat-card{ background:var(--card); border-color:var(--card-border); }
 
+/* ===== Admin: barra de ações dos formulários ===== */
+.form-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+/* garante comportamento idêntico para <a> e <button> */
+a.btn, button.btn{
+  display:inline-flex;
+  width:auto;
+  white-space:nowrap;
+}
+
+/* mobile: ações em coluna e botões 100% */
+@media (max-width: 720px){
+  .form-actions{
+    display:grid;
+    grid-template-columns: 1fr;
+  }
+  .form-actions .btn{
+    width:100%;
+    justify-content:center;
+  }
+}

@@ -21,7 +21,6 @@ $pages = max(1, (int)ceil($total / $perPage));
 if ($page > $pages) { $page = $pages; }
 $offset = ($page - 1) * $perPage;
 
-// LIMIT/OFFSET sanitarizados (inteiros) direto na query
 $sql = "SELECT id, name, email, subject, body, ip, created_at
         FROM messages {$where}
         ORDER BY created_at DESC
@@ -31,14 +30,33 @@ $rows = fetch_all($sql, $params);
 $ok  = $_GET['ok']  ?? null;
 $err = $_GET['err'] ?? null;
 ?>
+<style>
+.table.rtable{ width:100%; border-collapse:separate; border-spacing:0 8px; }
+.table.rtable tr{ background:#fff; border:1px solid #e7e7e7; border-radius:16px; }
+.table.rtable td,.table.rtable th{ background:transparent; border:0; }
+.table.rtable .actions-row{ display:flex; gap:8px; flex-wrap:wrap; }
+.dark .table.rtable tr{ background:var(--card); border-color:var(--card-border); }
+@media (max-width:820px){
+  .table.rtable thead{ display:none; }
+  .table.rtable tbody tr{ display:block; padding:10px 12px; }
+  .table.rtable tbody td{
+    display:flex; gap:10px; align-items:center;
+    padding:8px 0; border-bottom:1px solid rgba(0,0,0,.06);
+  }
+  .dark .table.rtable tbody td{ border-color:#1f2831; }
+  .table.rtable tbody td:last-child{ border-bottom:0; }
+  .table.rtable tbody td::before{
+    content:attr(data-label);
+    min-width:110px; color:var(--muted); font-weight:600;
+  }
+  .table.rtable .actions-row .btn{ width:100%; justify-content:center; }
+}
+</style>
+
 <h1 class="fade-in">Mensagens</h1>
 
-<?php if ($ok): ?>
-  <div class="card fade-in"><div class="pad" style="border-left:4px solid var(--ok)"><?= e($ok) ?></div></div><br>
-<?php endif; ?>
-<?php if ($err): ?>
-  <div class="card fade-in"><div class="pad" style="border-left:4px solid var(--danger)"><?= e($err) ?></div></div><br>
-<?php endif; ?>
+<?php if ($ok): ?><div class="card fade-in"><div class="pad" style="border-left:4px solid var(--ok)"><?= e($ok) ?></div></div><br><?php endif; ?>
+<?php if ($err): ?><div class="card fade-in"><div class="pad" style="border-left:4px solid var(--danger)"><?= e($err) ?></div></div><br><?php endif; ?>
 
 <form method="get" class="form-row" style="align-items:end">
   <div>
@@ -53,51 +71,43 @@ $err = $_GET['err'] ?? null;
 
 <p class="fade-in" style="color:var(--muted)"><?= $total ?> resultado(s)</p>
 
-<table class="table fade-in">
+<table class="table rtable fade-in">
   <thead>
     <tr>
-      <th>#</th>
-      <th>Nome</th>
-      <th>E-mail</th>
-      <th>Assunto</th>
-      <th>Data</th>
-      <th>IP</th>
-      <th style="width:260px">Ações</th>
+      <th>#</th><th>Nome</th><th>E-mail</th><th>Assunto</th><th>Data</th><th>IP</th><th style="width:260px">Ações</th>
     </tr>
   </thead>
   <tbody>
-    <?php foreach ($rows as $r): ?>
-      <tr>
-        <td><?= (int)$r['id'] ?></td>
-        <td><?= e($r['name']) ?></td>
-        <td><a href="mailto:<?= e($r['email']) ?>"><?= e($r['email']) ?></a></td>
-        <td><?= e($r['subject']) ?></td>
-        <td><?= e(date('d/m/Y H:i', strtotime($r['created_at']))) ?></td>
-        <td><?= e($r['ip']) ?></td>
-        <td class="actions">
+  <?php foreach ($rows as $r): ?>
+    <tr>
+      <td data-label="#"><?= (int)$r['id'] ?></td>
+      <td data-label="Nome"><?= e($r['name']) ?></td>
+      <td data-label="E-mail"><a href="mailto:<?= e($r['email']) ?>"><?= e($r['email']) ?></a></td>
+      <td data-label="Assunto"><?= e($r['subject']) ?></td>
+      <td data-label="Data"><?= e(date('d/m/Y H:i', strtotime($r['created_at']))) ?></td>
+      <td data-label="IP"><?= e($r['ip']) ?></td>
+      <td data-label="Ações">
+        <div class="actions-row">
           <a class="btn secondary" href="<?= e(base_url('admin/messages/view.php?id='.(int)$r['id'])) ?>">Ver</a>
           <a class="btn secondary" href="mailto:<?= e($r['email']) ?>?subject=<?= rawurlencode('Re: '.$r['subject']) ?>">Responder</a>
-          <form action="<?= e(base_url('admin/messages/delete.php')) ?>" method="post" style="display:inline" onsubmit="return confirm('Excluir esta mensagem?')">
+          <form action="<?= e(base_url('admin/messages/delete.php')) ?>" method="post" onsubmit="return confirm('Excluir esta mensagem?')">
             <?= csrf_field(); ?>
             <input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
             <input type="hidden" name="q" value="<?= e($q) ?>">
             <input type="hidden" name="page" value="<?= (int)$page ?>">
             <button class="btn" type="submit">Excluir</button>
           </form>
-        </td>
-      </tr>
-    <?php endforeach; ?>
-    <?php if (!$rows): ?>
-      <tr><td colspan="7">Nenhuma mensagem.</td></tr>
-    <?php endif; ?>
+        </div>
+      </td>
+    </tr>
+  <?php endforeach; ?>
+  <?php if (!$rows): ?><tr><td colspan="7">Nenhuma mensagem.</td></tr><?php endif; ?>
   </tbody>
 </table>
 
 <?php if ($pages > 1): ?>
   <nav class="fade-in" aria-label="Paginação" style="display:flex;gap:8px;justify-content:center;margin:16px 0">
-    <?php
-      $mk = function($p) use ($q){ $u = base_url('admin/messages/list.php?page='.$p.($q!==''?'&q='.rawurlencode($q):'')); return $u; };
-    ?>
+    <?php $mk = function($p) use ($q){ return base_url('admin/messages/list.php?page='.$p.($q!==''?'&q='.rawurlencode($q):'')); }; ?>
     <a class="btn secondary" href="<?= e($mk(max(1,$page-1))) ?>">&laquo; Anterior</a>
     <span class="btn" style="pointer-events:none"><?= (int)$page ?> / <?= (int)$pages ?></span>
     <a class="btn secondary" href="<?= e($mk(min($pages,$page+1))) ?>">Próxima &raquo;</a>

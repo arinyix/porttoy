@@ -29,7 +29,6 @@ if (is_post()) {
   if (!$category_id)  $err[]='Categoria obrigatória.';
 
   if (!$err) {
-    // Mantém o slug atual; se estiver vazio, gera um
     $slug = $p['slug'] ?: slugify($title);
 
     save_row('products', [
@@ -48,6 +47,15 @@ if (is_post()) {
   }
 }
 ?>
+<style>
+.admin-form .form-actions{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:820px){
+  .admin-form .form-row{grid-template-columns:1fr!important}
+  .admin-form .form-actions{flex-direction:column}
+  .admin-form .form-actions .btn{width:100%;justify-content:center}
+}
+</style>
+
 <h1 class="fade-in">Editar Produto #<?= (int)$id ?></h1>
 
 <?php if ($err): ?>
@@ -57,7 +65,7 @@ if (is_post()) {
   </div></div>
 <?php endif; ?>
 
-<form method="post" class="fade-in">
+<form method="post" class="admin-form fade-in">
   <?= csrf_field(); ?>
 
   <label for="title">Título</label>
@@ -99,11 +107,12 @@ if (is_post()) {
       </select>
     </div>
     <div>
+      <label>&nbsp;</label>
       <label><input type="checkbox" name="featured" value="1" <?= !empty($_POST) ? (!empty($_POST['featured'])?'checked':'') : ($p['featured']?'checked':'') ?>> Destaque</label>
     </div>
   </div>
 
-  <p>
+  <p class="form-actions">
     <button class="btn" type="submit">Salvar</button>
     <a class="btn secondary" href="<?= e(base_url('admin/products/list.php')) ?>">Voltar</a>
   </p>

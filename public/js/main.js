@@ -1,4 +1,41 @@
 // public/js/main.js
+
+
+/* ========== NAV HAMBURGUER ========== */
+(() => {
+  const nav      = document.querySelector('[data-nav]');
+  if (!nav) return;
+
+  const toggle   = nav.querySelector('[data-nav-toggle]');
+  const menu     = nav.querySelector('#primary-menu');
+  const backdrop = document.querySelector('[data-nav-backdrop]');
+
+  const open = () => {
+    nav.classList.add('open');
+    toggle?.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('no-scroll');
+    if (backdrop) backdrop.style.display = 'block';
+  };
+  const close = () => {
+    nav.classList.remove('open');
+    toggle?.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('no-scroll');
+    if (backdrop) backdrop.style.display = 'none';
+  };
+
+  toggle?.addEventListener('click', () => {
+    nav.classList.contains('open') ? close() : open();
+  });
+  backdrop?.addEventListener('click', close);
+  menu?.addEventListener('click', (e) => {
+    if (e.target.closest('a')) close();        // fecha ao clicar num link
+  });
+
+  // Se redimensionar para desktop, garante fechamento
+  const mq = window.matchMedia('(min-width: 721px)');
+  (mq.addEventListener ? mq.addEventListener : mq.addListener).call(mq, 'change', (e) => { if (e.matches) close(); });
+})();
+
 // Filtros, busca, lightbox, toasts, infinito + skeletons
 (function () {
   const grid = document.querySelector('[data-products-grid]');

@@ -8,21 +8,23 @@ require_once BASE_PATH . '/config/functions.php';
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Admin • ToyLab</title>
-  <link rel="stylesheet" href="<?= e(asset('css/styles.css')) ?>">
-  <script src="<?= e(asset('js/admin.js')) ?>" defer></script>
+  <!-- acrescente um ?v= para evitar cache -->
+  <link rel="stylesheet" href="<?= e(asset('css/styles.css')) ?>?v=7">
+  <script src="<?= e(asset('js/admin.js')) ?>?v=3" defer></script>
 </head>
 <body>
 <header class="admin-bar">
   <nav class="admin-nav" aria-label="Admin">
     <a class="brand" href="<?= e(base_url('admin/index.php')) ?>">Admin • ToyLab</a>
 
-    <!-- Botão hamburguer (só no mobile faz efeito) -->
-    <button type="button"
-            class="admin-toggle"
-            data-admin-toggle
-            aria-controls="adminLinks"
-            aria-expanded="false"
-            aria-label="Abrir menu">
+    <!-- Botão hamburguer (só tem efeito no mobile) -->
+    <button
+      type="button"
+      class="admin-toggle"
+      data-admin-toggle
+      aria-controls="adminLinks"
+      aria-expanded="false"
+      aria-label="Abrir menu">
       <span class="bar"></span>
     </button>
 
@@ -42,6 +44,8 @@ require_once BASE_PATH . '/config/functions.php';
       <a class="btn" href="<?= e(base_url('admin/logout.php')) ?>">Sair</a>
     </div>
   </nav>
+
+  <!-- backdrop do menu mobile -->
   <div class="nav-backdrop" id="adminBackdrop" hidden></div>
 </header>
 

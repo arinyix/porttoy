@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function openMenu() {
-    if (mql.matches) return;               // no desktop não abre painel
+    if (mql.matches) return; // no desktop não abre painel
     nav.classList.add('open');
     linksBox.hidden = false;
     if (backdrop) backdrop.hidden = false;
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function toggleMenu() {
-    if (mql.matches) return;               // no desktop o botão não faz nada
+    if (mql.matches) return; // no desktop o botão não faz nada
     (linksBox.hidden ? openMenu : closeMenu)();
   }
 

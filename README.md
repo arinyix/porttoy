@@ -187,3 +187,20 @@ Ou use tools/set_admin.php para definir um novo hash.
 
 > Este projeto é acadêmico, voltado à apresentação do ToyLab/UFOPA.  
 > Tecnologias: PHP 8, MySQL, HTML/CSS/JS (vanilla).
+
+---
+
+## ✉️ E-mail / SMTP (.env)
+
+O projeto envia:
+- Notificações do **Fale Conosco** para o e-mail do laboratório (admin).
+- **Auto-reply** opcional para quem preenche o formulário.
+- E-mails a partir do **Admin → Mensagens** (responder/compôr).
+
+Para **não versionar credenciais**, usamos variáveis em `.env`.
+
+### Passo a passo
+
+1. **Copie o exemplo** e edite:
+   ```bash
+   cp .env.example .env

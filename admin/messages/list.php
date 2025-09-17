@@ -87,17 +87,16 @@ $err = $_GET['err'] ?? null;
       <td data-label="Data"><?= e(date('d/m/Y H:i', strtotime($r['created_at']))) ?></td>
       <td data-label="IP"><?= e($r['ip']) ?></td>
       <td data-label="Ações">
-        <div class="actions-row">
+        <td class="actions">
           <a class="btn secondary" href="<?= e(base_url('admin/messages/view.php?id='.(int)$r['id'])) ?>">Ver</a>
-          <a class="btn secondary" href="mailto:<?= e($r['email']) ?>?subject=<?= rawurlencode('Re: '.$r['subject']) ?>">Responder</a>
-          <form action="<?= e(base_url('admin/messages/delete.php')) ?>" method="post" onsubmit="return confirm('Excluir esta mensagem?')">
+          <a class="btn secondary" href="<?= e(base_url('admin/messages/compose.php?to='.rawurlencode($r['email']).'&subject='.rawurlencode('Re: '.$r['subject']))) ?>">Responder no admin</a>
+          <form action="<?= e(base_url('admin/messages/delete.php')) ?>" method="post" style="display:inline" onsubmit="return confirm('Excluir esta mensagem?')">
             <?= csrf_field(); ?>
-            <input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
-            <input type="hidden" name="q" value="<?= e($q) ?>">
-            <input type="hidden" name="page" value="<?= (int)$page ?>">
-            <button class="btn" type="submit">Excluir</button>
-          </form>
-        </div>
+          <input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
+          <input type="hidden" name="q" value="<?= e($q) ?>">
+          <input type="hidden" name="page" value="<?= (int)$page ?>">
+          <button class="btn" type="submit">Excluir</button>
+        </form>
       </td>
     </tr>
   <?php endforeach; ?>

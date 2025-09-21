@@ -26,17 +26,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $logo_path = $partner['logo_path'];
 
   if (isset($_POST['remove_logo']) && $_POST['remove_logo'] === '1') {
-    if ($logo_path && str_starts_with($logo_path, 'public/uploads/')) {
-      @unlink(BASE_PATH . '/' . $logo_path);
+    if (!empty($logo_path)) {
+      $abs = media_fs($logo_path);
+      if (is_file($abs)) @unlink($abs);
     }
     $logo_path = null;
   }
 
   if (!$err && !empty($_FILES['logo']) && ($_FILES['logo']['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
-    $paths = handle_images_upload('logo');
+    $paths = handle_images_upload('logo'); // mantém seu fluxo
     if ($paths) {
-      if ($logo_path && str_starts_with($logo_path, 'public/uploads/')) {
-        @unlink(BASE_PATH . '/' . $logo_path);
+      if (!empty($logo_path)) {
+        $abs = media_fs($logo_path);
+        if (is_file($abs)) @unlink($abs);
       }
       $logo_path = $paths[0];
     }
@@ -80,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="card"><div class="pad">
     <div class="preview">
       <?php if (!empty($partner['logo_path'])): ?>
-        <img src="<?= e(base_url($partner['logo_path'])) ?>" alt="Logo atual" style="width:120px;height:60px;object-fit:contain;background:#fff;border:1px solid #e7e7e7;border-radius:8px;padding:6px">
+        <img src="<?= e(media_url($partner['logo_path'])) ?>" alt="Logo atual" style="width:120px;height:60px;object-fit:contain;background:#fff;border:1px solid #e7e7e7;border-radius:8px;padding:6px">
         <label><input type="checkbox" name="remove_logo" value="1"> Remover logo</label>
       <?php else: ?>
         <em>Sem logo</em>

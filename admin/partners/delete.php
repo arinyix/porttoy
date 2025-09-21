@@ -13,10 +13,11 @@ if ($id <= 0) {
   header('Location: '.base_url('admin/partners/list.php?err=ID%20inv%C3%A1lido')); exit;
 }
 
-// Tenta remover o arquivo da logo (se for do nosso /uploads)
+// Remove o arquivo da logo (se existir)
 $logo = fetch_value("SELECT logo_path FROM partners WHERE id=?", [$id]);
-if ($logo && is_string($logo) && str_starts_with($logo, 'public/uploads/')) {
-  @unlink(BASE_PATH . '/' . $logo);
+if ($logo && is_string($logo)) {
+  $abs = media_fs($logo);
+  if (is_file($abs)) @unlink($abs);
 }
 
 delete_row('partners', $id);

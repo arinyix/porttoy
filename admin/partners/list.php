@@ -66,7 +66,7 @@ $err = $_GET['err'] ?? null;
 
         <td data-label="Logo">
           <?php if (!empty($r['logo_path'])): ?>
-            <img src="<?= e(base_url($r['logo_path'])) ?>" alt="Logo <?= e($r['name']) ?>"
+            <img src="<?= e(media_url($r['logo_path'])) ?>" alt="Logo <?= e($r['name']) ?>"
                  style="width:72px;height:36px;object-fit:contain;background:#fff;border:1px solid #e7e7e7;border-radius:8px;padding:4px">
           <?php else: ?>—<?php endif; ?>
         </td>

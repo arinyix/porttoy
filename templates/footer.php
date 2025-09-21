@@ -6,9 +6,14 @@
   <div class="wrap">
     <div>
       <strong>Parcerias:</strong>
-      <?php foreach (fetch_all("SELECT * FROM partners ORDER BY id DESC LIMIT 6") as $p): ?>
-        <a href="<?= e($p['url']) ?>" target="_blank" rel="noopener" aria-label="Parceiro: <?= e($p['name']) ?>">
-          <img src="<?= e('/toylab/' . $p['logo_path']) ?>" alt="<?= e($p['name']) ?>" style="height:28px; vertical-align:middle; margin-right:8px;">
+      <?php foreach (fetch_all("SELECT id,name,logo_path,url FROM partners ORDER BY id DESC LIMIT 6") as $p): ?>
+        <?php $href = !empty($p['url']) ? $p['url'] : '#'; ?>
+        <a href="<?= e($href) ?>" target="_blank" rel="noopener" aria-label="Parceiro: <?= e($p['name']) ?>">
+          <img
+            src="<?= e(media_url($p['logo_path'])) ?>"
+            alt="<?= e($p['name']) ?>"
+            style="height:28px; vertical-align:middle; margin-right:8px;"
+            loading="lazy">
         </a>
       <?php endforeach; ?>
     </div>

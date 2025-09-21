@@ -1,4 +1,12 @@
 -- database/schema.sql
+
+CREATE DATABASE IF NOT EXISTS `toylab`
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE `toylab`;
+
+
 SET NAMES utf8mb4;
 SET time_zone = "+00:00";
 

@@ -99,8 +99,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <p><button class="btn" type="submit">Salvar admin</button></p>
     </form>
-    <p class="note">Este utilitário usa <code>password_hash()</code> (bcrypt) e <code>ON DUPLICATE KEY UPDATE</code>.
-      Se a tabela <code>users</code> não existir, importe <code>database/schema.sql</code>.</p>
   </div>
 </body>
 </html>

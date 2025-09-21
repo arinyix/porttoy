@@ -4,32 +4,43 @@ declare(strict_types=1);
 
 /**
  * Arquivo idempotente: pode ser incluído mais de uma vez sem warnings/erros.
- * - Protege todas as define() com !defined(...)
+ * - Protege define() com !defined(...)
  * - Carrega .env via config/env.php
- * - Mantém as mesmas funções utilitárias que você já usa
+ * - Aplica diretivas de sessão APENAS antes do session_start()
  */
 
-/* ===== Raiz do projeto (proteção contra redefinição) ===== */
+/* ===== Raiz do projeto ===== */
 if (!defined('BASE_PATH')) {
     define('BASE_PATH', realpath(__DIR__ . '/..'));
 }
 
-/* ===== Carrega variáveis do .env (idempotente) ===== */
+/* ===== .env ===== */
 require_once __DIR__ . '/env.php';
 
 /* ===== Exibição de erros ===== */
 $debug = filter_var(env('APP_DEBUG', 'true'), FILTER_VALIDATE_BOOLEAN);
 ini_set('display_errors', $debug ? '1' : '0');
 error_reporting($debug ? E_ALL : (E_ALL & ~E_WARNING));
-
-/* ===== Configs de sessão / log ===== */
-ini_set('session.cookie_httponly', '1');
-ini_set('session.use_strict_mode', '1');
-ini_set('session.cookie_samesite', 'Lax');
 ini_set('log_errors', '1');
 ini_set('error_log', BASE_PATH . '/toylab_error.log');
 
+/* ===== Sessão: só configurar se AINDA não estiver ativa ===== */
 if (session_status() !== PHP_SESSION_ACTIVE) {
+    // Diretivas só podem ser alteradas antes de iniciar a sessão
+    ini_set('session.cookie_httponly', '1');
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.cookie_samesite', 'Lax');
+
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path'     => '/',
+        'domain'   => '',
+        'secure'   => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+
     session_start();
 }
 
@@ -40,16 +51,16 @@ if (!headers_sent()) {
     header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'");
 }
 
-/* ===== Banco (com fallback para valores locais) ===== */
+/* ===== Banco (com fallback) ===== */
 if (!defined('DB_HOST')) define('DB_HOST', env('DB_HOST', 'localhost'));
 if (!defined('DB_NAME')) define('DB_NAME', env('DB_NAME', 'toylab'));
-if (!defined('DB_USER')) define('DB_USER', env('DB_USER', 'root'));   // ajuste se preciso
-if (!defined('DB_PASS')) define('DB_PASS', env('DB_PASS', ''));       // ajuste se preciso
+if (!defined('DB_USER')) define('DB_USER', env('DB_USER', 'root'));
+if (!defined('DB_PASS')) define('DB_PASS', env('DB_PASS', ''));
 
-/* ===== BASE_URL detectada automaticamente (protegida) ===== */
+/* ===== BASE_URL detectada automaticamente ===== */
 if (!defined('BASE_URL')) {
-    $doc = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? ''), '/');
-    $root = str_replace('\\', '/', BASE_PATH);
+    $doc  = rtrim(str_replace('\\','/', $_SERVER['DOCUMENT_ROOT'] ?? ''), '/');
+    $root = str_replace('\\','/', BASE_PATH);
     $url  = str_replace($doc, '', $root); // ex.: "/porttoy" ou "/toylab"
     define('BASE_URL', $url ?: '');
 }
@@ -76,7 +87,7 @@ function e(?string $str): string {
     return htmlspecialchars((string)$str, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
-/** URL base do projeto (sem path extra) */
+/** URL base do projeto */
 function base_url_root(): string {
     return BASE_URL;
 }
@@ -119,7 +130,6 @@ function current_url(): string {
 }
 
 /* ===== Helpers de mídia ===== */
-
 if (!function_exists('media_fs')) {
     function media_fs(string $path): string {
         $rel = ltrim($path, '/');

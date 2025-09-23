@@ -204,3 +204,7 @@ Para **não versionar credenciais**, usamos variáveis em `.env`.
 1. **Copie o exemplo** e edite:
    ```bash
    cp .env.example .env
+
+porttoyy@gmail.com
+porttoy123$
+menu jrno dwmu ptqj
